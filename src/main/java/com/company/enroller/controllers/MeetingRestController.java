@@ -26,13 +26,20 @@ public class MeetingRestController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getMeetingById(@PathVariable long id){
         Meeting meeting = meetingService.findById(id);
-
         return new ResponseEntity<>(meeting, HttpStatus.OK);
     }
 
     @RequestMapping(value ="", method = RequestMethod.POST)
     public ResponseEntity<?> createMeeting(@RequestBody Meeting meeting) {
-        Meeting createdMeeting = meetingService.createMeeting(meeting);
-        return new ResponseEntity<>(meeting, HttpStatus.CREATED);
+
+        meetingService.createMeeting(meeting);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{title}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteMeeting(@PathVariable String title) {
+        meetingService.deleteByTitle(title);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

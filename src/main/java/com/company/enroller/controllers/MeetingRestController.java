@@ -17,19 +17,19 @@ public class MeetingRestController {
     MeetingService meetingService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<?> getMeetings(){
+    public ResponseEntity<?> getMeetings() {
         Collection<Meeting> allMeetings = meetingService.getAll();
 
         return new ResponseEntity<>(allMeetings, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getMeetingById(@PathVariable long id){
+    public ResponseEntity<?> getMeetingById(@PathVariable long id) {
         Meeting meeting = meetingService.findById(id);
         return new ResponseEntity<>(meeting, HttpStatus.OK);
     }
 
-    @RequestMapping(value ="", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<?> createMeeting(@RequestBody Meeting meeting) {
 
         meetingService.createMeeting(meeting);
@@ -37,9 +37,15 @@ public class MeetingRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{title}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteMeeting(@PathVariable String title) {
-        meetingService.deleteByTitle(title);
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteMeeting(@PathVariable long id) {
+        meetingService.deleteByTitle(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateMeeting(@RequestBody Meeting meeting) {
+        Meeting updatedMeeting = meetingService.updateMeeting(meeting.getId(), meeting.getTitle(), meeting.getDescription(), meeting.getDate());
+        return new ResponseEntity<>(updatedMeeting, HttpStatus.OK);
     }
 }

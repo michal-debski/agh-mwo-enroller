@@ -1,12 +1,14 @@
 package com.company.enroller.persistence;
 
 import com.company.enroller.model.Meeting;
+import com.company.enroller.model.Participant;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.List;
 
 @Component("meetingService")
 public class MeetingService {
@@ -65,5 +67,30 @@ public class MeetingService {
         session.save(foundMeeting);
         transaction.commit();
         return foundMeeting;
+    }
+
+    public Meeting addParticipantToMeeting(long id, Collection<Participant> participants) {
+        String hql = "FROM Meeting WHERE id = :id";
+        Session session = connector.getSession();
+        Query<Meeting> query = session.createQuery(hql, Meeting.class);
+        query.setParameter("id", id);
+        Meeting foundMeeting = query.uniqueResult();
+        for (Participant participant : participants) {
+            foundMeeting.addParticipant(participant);
+        }
+        Transaction transaction = session.beginTransaction();
+        session.save(foundMeeting);
+        transaction.commit();
+        return foundMeeting;
+    }
+
+    public List<Participant> getParticipantsForSpecificMeetingId(long id) {
+        String hql = "FROM Meeting WHERE id = :id";
+        Session session = connector.getSession();
+        Query<Meeting> query = session.createQuery(hql, Meeting.class);
+        query.setParameter("id", id);
+        Meeting meeting = query.uniqueResult();
+        return meeting.getParticipants().stream().toList();
+
     }
 }

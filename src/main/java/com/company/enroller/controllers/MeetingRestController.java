@@ -26,7 +26,11 @@ public class MeetingRestController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getMeetingById(@PathVariable long id) {
         Meeting meeting = meetingService.findById(id);
-        return new ResponseEntity<>(meeting, HttpStatus.OK);
+        if(meeting == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }else{
+            return new ResponseEntity<>(meeting, HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
@@ -39,7 +43,7 @@ public class MeetingRestController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteMeeting(@PathVariable long id) {
-        meetingService.deleteByTitle(id);
+        meetingService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -31,7 +31,6 @@ public class MeetingService {
     }
 
     public void createMeeting(Meeting meeting) {
-
         Session session = connector.getSession();
         Transaction transaction = session.beginTransaction();
         session.save(meeting);
@@ -40,7 +39,7 @@ public class MeetingService {
     }
 
 
-    public Meeting deleteByTitle(long id) {
+    public Meeting deleteById(long id) {
         String hql = "FROM Meeting WHERE id = :id";
         Session session = connector.getSession();
         Query<Meeting> query = session.createQuery(hql, Meeting.class);

@@ -2,6 +2,7 @@ package com.company.enroller.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -34,8 +35,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                         issuer,
                         tokenExpiration),
                         UsernamePasswordAuthenticationFilter.class)
+                .addFilter(new JWTAuthorizationFilter(authenticationManager(), secret))
                 .authorizeRequests()
-                .anyRequest().permitAll()
+                .antMatchers(HttpMethod.POST, "/participants").permitAll()
+                .antMatchers("/tokens").permitAll()
+                .antMatchers("/**").authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         ;

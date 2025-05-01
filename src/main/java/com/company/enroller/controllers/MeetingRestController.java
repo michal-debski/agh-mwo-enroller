@@ -1,7 +1,9 @@
 package com.company.enroller.controllers;
 
 import com.company.enroller.model.Meeting;
+import com.company.enroller.model.Participant;
 import com.company.enroller.persistence.MeetingService;
+import com.company.enroller.persistence.ParticipantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,9 @@ public class MeetingRestController {
 
     @Autowired
     MeetingService meetingService;
+
+    @Autowired
+    ParticipantService participantService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<?> getMeetings() {
@@ -51,5 +56,28 @@ public class MeetingRestController {
     public ResponseEntity<?> updateMeeting(@RequestBody Meeting meeting) {
         Meeting updatedMeeting = meetingService.updateMeeting(meeting.getId(), meeting.getTitle(), meeting.getDescription(), meeting.getDate());
         return new ResponseEntity<>(updatedMeeting, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/participants", method = RequestMethod.GET)
+    public ResponseEntity<?> getMeetingParticipants(@PathVariable long id) {
+        Meeting meeting = meetingService.findById(id);
+        Collection<Participant> participants = meetingService.findAllParticipantForSelectedMeeting(meeting);
+        return new ResponseEntity<>(participants, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/participants/{login}", method = RequestMethod.POST)
+    public ResponseEntity<?> addParticipant(@PathVariable long id, @PathVariable String login) {
+        Participant foundParticipant = participantService.findByLogin(login);
+        Meeting foundMeeting = meetingService.findById(id);
+        meetingService.addParticipantToMeeting(foundParticipant, foundMeeting);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/participants/{login}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteParticipantFromMeeting(@PathVariable long id, @PathVariable String login) {
+        Participant foundParticipant = participantService.findByLogin(login);
+        Meeting foundMeeting = meetingService.findById(id);
+        meetingService.deleteParticipantFromMeeting(foundParticipant, foundMeeting);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

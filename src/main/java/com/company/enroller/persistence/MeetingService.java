@@ -1,6 +1,7 @@
 package com.company.enroller.persistence;
 
 import com.company.enroller.model.Meeting;
+import com.company.enroller.model.Participant;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -35,7 +36,6 @@ public class MeetingService {
         Transaction transaction = session.beginTransaction();
         session.save(meeting);
         transaction.commit();
-
     }
 
 
@@ -65,5 +65,25 @@ public class MeetingService {
         session.save(foundMeeting);
         transaction.commit();
         return foundMeeting;
+    }
+
+    public Collection<Participant> findAllParticipantForSelectedMeeting(Meeting meeting) {
+        return meeting.getParticipants();
+    }
+
+    public void addParticipantToMeeting(Participant participant, Meeting meeting) {
+        Session session = connector.getSession();
+        meeting.addParticipant(participant);
+        Transaction transaction = session.beginTransaction();
+        session.save(meeting);
+        transaction.commit();
+    }
+
+    public void deleteParticipantFromMeeting(Participant foundParticipant, Meeting meeting) {
+        Session session = connector.getSession();
+        meeting.removeParticipant(foundParticipant);
+        Transaction transaction = session.beginTransaction();
+        session.save(meeting);
+        transaction.commit();
     }
 }

@@ -35,7 +35,7 @@ public class ParticipantRestController {
     public ResponseEntity<?> registerParticipant(@RequestBody Participant participant) {
         Participant byLogin = participantService.findByLogin(participant.getLogin());
         if (byLogin != null) {
-            return new ResponseEntity(
+            return new ResponseEntity<>(
                     "Unable to create. A participant with login " + participant.getLogin() + " already exist.", HttpStatus.CONFLICT);
         } else {
             participantService.addParticipant(participant);
